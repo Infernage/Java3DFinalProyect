@@ -24,7 +24,7 @@ public class Esfera extends Figura {
     boolean esPersonaje;
 
   public  Esfera(float radio, String textura, BranchGroup conjunto, ArrayList<Figura> listaObjetosFisicos, Juego juego) {
-        super(conjunto, listaObjetosFisicos, juego);   //Si se desea programar una clase Esfera, su constrctor tendr’a esta linea
+        super(conjunto, listaObjetosFisicos, juego, false);   //Si se desea programar una clase Esfera, su constrctor tendr’a esta linea
 
         //Creando una apariencia
         Appearance apariencia = new Appearance();

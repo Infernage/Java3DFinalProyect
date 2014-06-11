@@ -124,7 +124,7 @@ public class Juego extends JFrame implements Runnable {
         float elasticidad = 0.5f;
         float dampingLineal = 0.5f;
         float dampingAngular = 0.9f;
-        personaje = new EsferaMDL("objetosMDL/Iron_Golem.mdl", radio, conjunto, listaObjetosFisicos, this, true);
+        personaje = new EsferaMDL("objetosMDL/Air_Elemental.mdl", radio, conjunto, listaObjetosFisicos, this, true, false);
         personaje.crearPropiedades(masa, elasticidad, 0.5f, posX, posY, posZ, mundoFisico);
         personaje.cuerpoRigido.setDamping(dampingLineal, dampingAngular);
 
@@ -168,11 +168,8 @@ public class Juego extends JFrame implements Runnable {
             if (personaje.atras) {
                 fuerzaHaciaAdelante = -personaje.masa * 10f * 2.5f;
             }
-            if (personaje.derecha) {
-                fuerzaLateral = -personaje.masa * 4f;
-            }
-            if (personaje.izquierda) {
-                fuerzaLateral = personaje.masa * 4f;
+            if (!personaje.player2){
+                fuerzaHaciaAdelante = -fuerzaHaciaAdelante;
             }
 
             Vector3d direccionFrente = personaje.conseguirDireccionFrontal();
