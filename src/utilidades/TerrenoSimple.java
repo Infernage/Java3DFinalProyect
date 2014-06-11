@@ -8,7 +8,7 @@ import com.sun.j3d.utils.geometry.*;
 import javax.vecmath.*;
 import java.util.Random;
 
-//Esta es una adaptacion de la clase SimpleLand.java, conviertiŽndola en un figura fisica JBullet
+//Esta es una adaptacion de la clase SimpleLand.java, conviertiï¿½ndola en un figura fisica JBullet
 public class TerrenoSimple extends BranchGroup {
     Point3f[] pts;
     int[] stripCounts;
@@ -28,25 +28,20 @@ public class TerrenoSimple extends BranchGroup {
         t3Dterreno.set(new Vector3f(posX , posY, posZ));
         TransformGroup TGterreno = new TransformGroup(t3Dterreno);
         
-        //Creacion de varios cuadrados visuales y fisicos, llamados aqui "l‡minas"
-         float lenUnit=(float) (length/4);
-        float widUnit=(float) (width/4);
-        float[] yPoints=new float[5];
-        float[] xPoints= new float[5];
-        for (int i=0;i<5;i++){
-            yPoints[i]=(float)(i*lenUnit);
-            xPoints[i]=(float)(i*widUnit);
-        }
+        //Creacion de varios cuadrados visuales y fisicos, llamados aqui "lï¿½minas"
+         float lenUnit=0;
+        float widUnit=0;
+
         pts=new Point3f[144];
         texts=new float[288];
         int counter=0;
-        int edgesize=5;
+        int edgesize=0;
 
         int moderator=2;
         float[] zlist = new float[20];
-        Random zMaker=new Random(System.currentTimeMillis());
+        float zMaker = 0;
         for (int i=0;i<20;i++)
-            zlist[i]=2f*(zMaker.nextFloat()*(moderator))-1;
+            zlist[i]=2f*(zMaker*(moderator))-1;
 
         Point3f[][] grid = new Point3f[7][7];
 

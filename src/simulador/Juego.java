@@ -78,10 +78,10 @@ public class Juego extends JFrame implements Runnable {
         objRoot.addChild(mostrar);
 
         //Es sencillo crearlos estaticos como se muestra a continuacion. Si desea que caigan, y se sometan a fuerzas, mejor crear una figura.
-        float radio = 2f;
+       /* float radio = 2f;
         float posY = -4f;
         // tutorial de creacion de una objeto   (la piedra con textura de ladrillo)
-        // parte gráfica del objeto:
+        // parte grï¿½fica del objeto:
         Appearance apariencia = new Appearance();
         apariencia.setTexture(new TextureLoader(System.getProperty("user.dir") + "//texturas//ladrillo.jpg", this).getTexture());
         TextureAttributes texAttr = new TextureAttributes();
@@ -94,8 +94,8 @@ public class Juego extends JFrame implements Runnable {
         TGesferaFija.addChild(figuraVisual);
         objRoot.addChild(TGesferaFija);
 
-        // parte física del objeto:
-        float masa = 0f;                                                       //con masa =0 el objeto es est‡tico
+        // parte fï¿½sica del objeto:
+        float masa = 0f;                                                       //con masa =0 el objeto es estï¿½tico
         SphereShape figuraFisica = new SphereShape(radio);
         CollisionObject ramaFisica = new CollisionObject();
         ramaFisica.setCollisionShape(figuraFisica);
@@ -111,7 +111,7 @@ public class Juego extends JFrame implements Runnable {
 
         //Para crear objeto que se sometan a fisica, su masa debe seo >0 e invocar continuamente
         // mundoFisico.stepSimulation(dt) y actualizar su objeto java3d a partir de su rigidBody.
-        //Mejor, usar la clase Figura simulada con el codigo del run(), mostrar() y actualizar()
+        //Mejor, usar la clase Figura simulada con el codigo del run(), mostrar() y actualizar()*/
         return objRoot;
     }
 
@@ -119,8 +119,8 @@ public class Juego extends JFrame implements Runnable {
         //Creando el personaje del juego, controlado por teclado. Tambien se pudo haber creado en CrearEscena()
         float masa = 1f;
         float radio = 1f;
-        float posX = 5f;
-        float posY = 5f, posZ = 0f;
+        float posX = 20f;
+        float posY = -2f, posZ = 10f;
         float elasticidad = 0.5f;
         float dampingLineal = 0.5f;
         float dampingAngular = 0.9f;
@@ -128,7 +128,7 @@ public class Juego extends JFrame implements Runnable {
         personaje.crearPropiedades(masa, elasticidad, 0.5f, posX, posY, posZ, mundoFisico);
         personaje.cuerpoRigido.setDamping(dampingLineal, dampingAngular);
 
-        //Creando un Agente (es decir, un personaje aut—nomo) con el objetivo de perseguir al personaje controlado por teclado
+        //Creando un Agente (es decir, un personaje autï¿½nomo) con el objetivo de perseguir al personaje controlado por teclado
         perseguidor = new Esfera(radio, "texturas/balon.jpg", conjunto, listaObjetosFisicos, this);
         if (!actualizandoFisicas) {
             perseguidor.crearPropiedades(masa, elasticidad, dampingLineal, 20, 4, -15, mundoFisico);
@@ -137,7 +137,7 @@ public class Juego extends JFrame implements Runnable {
 
         //Creacion de un Terreno Simple (no es una figura, no es movil, tiene masa 0)
         float friccion = 0.5f;
-        utilidades.TerrenoSimple terreno = new utilidades.TerrenoSimple(30, 30, -5, -3f, -12, "unaTextura_Desabilitada", conjunto, mundoFisico, friccion);
+        utilidades.TerrenoSimple terreno = new utilidades.TerrenoSimple(150, 150, 3, -3f, -4, "unaTextura_Desabilitada", conjunto, mundoFisico, friccion);
     }
 
     void actualizar(float dt) {
@@ -252,6 +252,7 @@ public class Juego extends JFrame implements Runnable {
         x.setSize(1000, 800);
         x.setVisible(true);
         x.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        x.colocarCamara(x.universo, new Point3d(2.5f, 8f, 22f), new Point3d(3, 0, 0));
+        float L = 1f;
+        x.colocarCamara(x.universo, new Point3d(50f*L, 0f*L, 22f*L), new Point3d(3, 0, 0));
     }
 }
