@@ -3,7 +3,9 @@ package simulador;
 import figuras.EsferaMDL;
 import java.awt.AWTEvent;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 import javax.media.j3d.*;
 
 public class DeteccionControlPersonaje extends javax.media.j3d.Behavior {
@@ -14,6 +16,7 @@ public class DeteccionControlPersonaje extends javax.media.j3d.Behavior {
     WakeupCondition keepUpCondition = null;
     WakeupCriterion[] continueArray = new WakeupCriterion[2];
     boolean neg;
+    
 
     public DeteccionControlPersonaje(Figura _personaje, boolean negate) {
         personaje = _personaje;
@@ -28,39 +31,57 @@ public class DeteccionControlPersonaje extends javax.media.j3d.Behavior {
     }
 
     public void processStimulus(Enumeration criteria) {
+        
         while (criteria.hasMoreElements()) {
+            
             WakeupCriterion ster = (WakeupCriterion) criteria.nextElement();
             if (ster instanceof WakeupOnAWTEvent) {
                 AWTEvent[] events = ((WakeupOnAWTEvent) ster).getAWTEvent();
                 for (int n = 0; n < events.length; n++) {
                     if (events[n] instanceof KeyEvent) {
                         KeyEvent ek = (KeyEvent) events[n];
-                        EsferaMDL pj = (EsferaMDL) personaje;
+                        EsferaMDL pj = (EsferaMDL) personaje;                    
+                        List<String> lista = new ArrayList<>();
+                        lista.add(pj.nombreAnimacionQuieto);
+                        pj.ab.setDefaultAnimations(lista);
+                        
                         if (ek.getID() == KeyEvent.KEY_PRESSED) {
                             personaje.quieto = false;
-                            if (ek.getKeyChar() == 'd') {
+                           
+                            if (ek.getKeyChar() == 'd' && personaje.ataque==false 
+                                    && personaje.ataqueFuerte==false && personaje.parar==false) {
                                 pj.ab.playAnimation(pj.nombreAnimacionCaminando, true);
                                 if (neg){
                                     personaje.atras = true;
                                 } else{
                                     personaje.adelante = true;
                                 }
-                            } else if (ek.getKeyChar() == 'a') {
+                            } else if (ek.getKeyChar() == 'a'  && personaje.ataque==false
+                                    && personaje.ataqueFuerte==false && personaje.parar==false) {
                                 pj.ab.playAnimation(pj.nombreAnimacionCaminando, true);
                                 if (!neg){
                                     personaje.atras = true;
                                 } else{
                                     personaje.adelante = true;
                                 }
-                            } else if (ek.getKeyChar() == 'z'){
+                            } else if (ek.getKeyChar() == 'z'&& personaje.ataque==false
+                                    && personaje.ataqueFuerte==false && personaje.parar==false){
                                 pj.ab.playAnimation(pj.nombreAnimacionLuchando, false);
                                 personaje.ataque = true;
-                            } else if (ek.getKeyChar() == 'x'){
+                                personaje.adelante=false;
+                                personaje.atras=false;
+                            } else if (ek.getKeyChar() == 'x'&& personaje.ataque==false
+                                    && personaje.ataqueFuerte==false && personaje.parar==false){
                                 pj.ab.playAnimation(pj.nombreAnimacionLuchandoFuerte, false);
                                 personaje.ataqueFuerte = true;
-                            } else if (ek.getKeyChar() == 'c'){
-                                pj.ab.playAnimation(pj.nombreAnimacionParando, false);
+                                personaje.adelante=false;
+                                personaje.atras=false;
+                            } else if (ek.getKeyChar() == 'c'&& personaje.ataque==false
+                                    && personaje.ataqueFuerte==false && personaje.parar==false){
+                                pj.ab.playAnimation(pj.nombreAnimacionParando, true);
                                 personaje.parar = true;
+                                personaje.adelante=false;
+                                personaje.atras=false;
                             }
                         } else if (ek.getID() == KeyEvent.KEY_RELEASED) {
                             if (ek.getKeyChar() == 'd') {
@@ -76,13 +97,15 @@ public class DeteccionControlPersonaje extends javax.media.j3d.Behavior {
                                     personaje.adelante = false;
                                 }
                             } else if (ek.getKeyChar() == 'z'){
-                                personaje.ataque = false;
+                              //  personaje.ataque = false;
                             } else if (ek.getKeyChar() == 'x'){
-                                personaje.ataqueFuerte = false;
+                             //   personaje.ataqueFuerte = false;
                             } else if (ek.getKeyChar() == 'c'){
                                 personaje.parar = false;
                             }
                         }
+                       
+                
                         if (!personaje.adelante && !personaje.atras && !personaje.ataque && !personaje.ataqueFuerte
                                 && !personaje.parar && !personaje.quieto){
                             personaje.quieto = true;
@@ -92,6 +115,8 @@ public class DeteccionControlPersonaje extends javax.media.j3d.Behavior {
                 }
             }
         }
+         
+        
         wakeupOn(keepUpCondition);
     }
 }
