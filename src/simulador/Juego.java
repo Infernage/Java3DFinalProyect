@@ -163,17 +163,17 @@ public class Juego extends JFrame implements Runnable {
         if (personaje != null) {
             float fuerzaHaciaAdelante = 0, fuerzaLateral = 0;
             if (personaje.adelante) {
-                fuerzaHaciaAdelante = personaje.masa * 10f * 2.5f;
+                fuerzaHaciaAdelante = personaje.masa * 10f;
             }
             if (personaje.atras) {
-                fuerzaHaciaAdelante = -personaje.masa * 10f * 2.5f;
+                fuerzaHaciaAdelante = -personaje.masa * 10f;
             }
             if (!personaje.player2){
                 fuerzaHaciaAdelante = -fuerzaHaciaAdelante;
             }
 
             Vector3d direccionFrente = personaje.conseguirDireccionFrontal();
-            personaje.cuerpoRigido.applyCentralForce(new Vector3f((float) direccionFrente.x * fuerzaHaciaAdelante * 0.1f, 0, (float) direccionFrente.z * fuerzaHaciaAdelante * 0.1f));
+            personaje.cuerpoRigido.setLinearVelocity(new Vector3f((float) direccionFrente.x * fuerzaHaciaAdelante * 0.1f, 0, (float) direccionFrente.z * fuerzaHaciaAdelante * 0.1f));
             personaje.cuerpoRigido.applyTorque(new Vector3f(0, fuerzaLateral, 0));
         }
 
