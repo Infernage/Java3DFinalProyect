@@ -31,9 +31,9 @@ public class Figura {
     //atributos opcionales para dotar a la figura de cierta inteligencia
     public Vector3f localizacionObjetivo;
     public int estadoFigura;                    //Dependiendo del estado de la figura, su entorno, y del juego, la figura tiene un comportamiento dado.
-    public int[] estadoEntornoFigura;      //El entorno alrededoar de la figura podria descrbirse con m‡s de un estado. Lloviendo y tengo poca energia
+    public int[] estadoEntornoFigura;      //El entorno alrededoar de la figura podria descrbirse con mï¿½s de un estado. Lloviendo y tengo poca energia
     public Figura objetivo;                      //El objetivo puede ser: localizar otra figura,
-    //Si adem‡s, hubiera que realizar uan accion particular (ej. Dispararle, darle alimento) se necesitaria otro atributo (ej. TareaObjetivo)
+    //Si ademï¿½s, hubiera que realizar uan accion particular (ej. Dispararle, darle alimento) se necesitaria otro atributo (ej. TareaObjetivo)
     float aceleracionMuscular;
 
     public Figura(BranchGroup conjunto, ArrayList<Figura> listaObjetosFisicos, Juego juego, boolean p2) {
@@ -49,7 +49,7 @@ public class Figura {
 
     public void crearPropiedades(float masa, float elasticidad, float dampingLineal, float posX, float posY, float posZ, DiscreteDynamicsWorld mundoFisico) {
         this.mundoFisico = mundoFisico;
-        //Creaciîn de un cuerpoRigido (o RigidBody) con sus propiedades fisicas 
+        //Creaciï¿½n de un cuerpoRigido (o RigidBody) con sus propiedades fisicas 
         this.masa = masa;
         Transform groundTransform = new Transform();
         groundTransform.setIdentity();
@@ -65,23 +65,23 @@ public class Figura {
 
         cuerpoRigido = new RigidBody(InformacionCuerpoR);
         cuerpoRigido.setActivationState(RigidBody.DISABLE_DEACTIVATION);
-        cuerpoRigido.setDamping(dampingLineal, 0.1f);   //a–ade m‡s (1) o menos  (0) "friccion del aire" al desplazarse/caer o rotar
+        cuerpoRigido.setDamping(dampingLineal, 0.1f);   //aï¿½ade mï¿½s (1) o menos  (0) "friccion del aire" al desplazarse/caer o rotar
         cuerpoRigido.setFriction(0.3f);
-        //A–adiendo el cuerpoRigido al mundoFisico
+        //Aï¿½adiendo el cuerpoRigido al mundoFisico
         mundoFisico.addRigidBody(cuerpoRigido); // add the body to the dynamics world
         identificadorFisico = mundoFisico.getNumCollisionObjects() - 1;
 
-        //A–adiendo objetoVisual asociado al grafo de escea y a la lista de objetos fisicos visibles y situandolo
+        //Aï¿½adiendo objetoVisual asociado al grafo de escea y a la lista de objetos fisicos visibles y situandolo
         conjunto.addChild(ramaVisible);
         this.listaObjetosFisicos.add(this);
         identificadorFigura = listaObjetosFisicos.size() - 1;
 
-        //Presentaci—n inicial de la  figura visual asociada al cuerpo rigido
+        //Presentaciï¿½n inicial de la  figura visual asociada al cuerpo rigido
         Transform3D inip = new Transform3D();
         inip.set(new Vector3f(posX, posY, posZ));
         desplazamientoFigura.setTransform(inip);
 
-        //Actualizacion de posicion. La rotacion se empezar‡ a actualizar en el primer movimiento (ver final del metodo mostrar(rigidBody))
+        //Actualizacion de posicion. La rotacion se empezarï¿½ a actualizar en el primer movimiento (ver final del metodo mostrar(rigidBody))
         this.posiciones[0] = posX;
         this.posiciones[1] = posY;
         this.posiciones[2] = posZ;
@@ -101,7 +101,7 @@ public class Figura {
             Transform3D rot = new Transform3D(orientacion, new Vector3f((float) trans.origin.x, (float) trans.origin.y, (float) trans.origin.z), 1);
             desplazamientoFigura.setTransform(rot);
 
-            //Actualizacion de Matriz de rotaci—n y posiciones
+            //Actualizacion de Matriz de rotaciï¿½n y posiciones
             rot.get(this.matrizRotacionPersonaje);
             this.posiciones[0] = trans.origin.x;
             this.posiciones[1] = trans.origin.y;
@@ -130,6 +130,7 @@ public class Figura {
     }
 
     public void actualizar() {
+      
   //Opcional: ACTUALIZACION DEL ESTADO DE LA FIGURA Y DEL ESTADO DEL ENTORNO
         //Para actualizar el estado de la figura:  detectar cercanias,exploraciones picking, localizacion (cuadrantes, mundos)
         //Para actualizar el estado del entorno:  lo puede hacer la misma figura, una figura coordinara, o el mismo juego
