@@ -1,16 +1,17 @@
 package figuras;
 
-import utilidades.CapabilitiesMDL;
-import simulador.*;
 import com.bulletphysics.collision.dispatch.*;
 import com.bulletphysics.collision.shapes.*;
 import com.sun.j3d.loaders.Scene;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import javax.media.j3d.*;
 import javax.vecmath.*;
 import net.sf.nwn.loader.AnimationBehavior;
 import net.sf.nwn.loader.NWNLoader;
+import simulador.*;
+import utilidades.CapabilitiesMDL;
 
 public class EsferaMDL extends Figura {
 
@@ -20,7 +21,6 @@ public class EsferaMDL extends Figura {
             nombreAnimacionLuchandoFuerte, nombreAnimacionParando;
     Vector3d direccion = new Vector3d(0, 0, 10);
     public float radio, alturaP, alturaDeOjos;
-    boolean esPersonaje;
 
     public EsferaMDL(String ficheroMDL, float radio, BranchGroup conjunto, ArrayList<Figura> listaObjetos,
             Juego juego, boolean esPersonaje, boolean player2) {
@@ -74,6 +74,9 @@ public class EsferaMDL extends Figura {
             nombreAnimacionLuchandoFuerte = "air_elemental:ca1stab";
             nombreAnimacionParando = "air_elemental:cpause1";
             nombreAnimacionQuieto = "air_elemental:ctaunt";
+            List anims = new ArrayList<>();
+            anims.add(nombreAnimacionQuieto);
+            ab.setDefaultAnimations(anims);
             rotacionX = -1.5f;
             rotacionZ = player2 ? 3.14f : 0;
             escalaTamano = 0.8f;

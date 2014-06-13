@@ -37,16 +37,15 @@ public class DeteccionControlPersonaje extends javax.media.j3d.Behavior {
                         KeyEvent ek = (KeyEvent) events[n];
                         EsferaMDL pj = (EsferaMDL) personaje;
                         if (ek.getID() == KeyEvent.KEY_PRESSED) {
-                            personaje.quieto = false;
                             if (ek.getKeyChar() == 'd') {
-                                pj.ab.playAnimation(pj.nombreAnimacionCaminando, true);
+                                pj.ab.playAnimation(pj.nombreAnimacionCaminando, false);
                                 if (neg){
                                     personaje.atras = true;
                                 } else{
                                     personaje.adelante = true;
                                 }
                             } else if (ek.getKeyChar() == 'a') {
-                                pj.ab.playAnimation(pj.nombreAnimacionCaminando, true);
+                                pj.ab.playAnimation(pj.nombreAnimacionCaminando, false);
                                 if (!neg){
                                     personaje.atras = true;
                                 } else{
@@ -61,6 +60,8 @@ public class DeteccionControlPersonaje extends javax.media.j3d.Behavior {
                             } else if (ek.getKeyChar() == 'c'){
                                 pj.ab.playAnimation(pj.nombreAnimacionParando, false);
                                 personaje.parar = true;
+                            } else if (ek.getKeyChar() == 'w'){
+                                personaje.saltar = true;
                             }
                         } else if (ek.getID() == KeyEvent.KEY_RELEASED) {
                             if (ek.getKeyChar() == 'd') {
@@ -81,12 +82,9 @@ public class DeteccionControlPersonaje extends javax.media.j3d.Behavior {
                                 personaje.ataqueFuerte = false;
                             } else if (ek.getKeyChar() == 'c'){
                                 personaje.parar = false;
+                            } else if (ek.getKeyChar() == 'w'){
+                                personaje.saltar = false;
                             }
-                        }
-                        if (!personaje.adelante && !personaje.atras && !personaje.ataque && !personaje.ataqueFuerte
-                                && !personaje.parar && !personaje.quieto){
-                            personaje.quieto = true;
-                            pj.ab.playAnimation(pj.nombreAnimacionQuieto, true);
                         }
                     }
                 }

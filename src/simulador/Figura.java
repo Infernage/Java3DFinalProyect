@@ -18,7 +18,7 @@ public class Figura {
     public BranchGroup ramaVisible = new BranchGroup();
     public TransformGroup desplazamientoFigura = new TransformGroup();
     public RigidBody cuerpoRigido;
-    public boolean adelante, atras, quieto, ataque, ataqueFuerte, parar;
+    public boolean adelante, atras, ataque, ataqueFuerte, parar, saltar;
     public boolean esMDL;
     public boolean player2;
     ArrayList<simulador.Figura> listaObjetosFisicos;
@@ -26,6 +26,7 @@ public class Figura {
     DiscreteDynamicsWorld mundoFisico;
     Matrix3f matrizRotacionPersonaje = new Matrix3f();
     Juego juego;
+    protected boolean esPersonaje;
 
     //atributos opcionales para dotar a la figura de cierta inteligencia
     public Vector3f localizacionObjetivo;
@@ -133,9 +134,9 @@ public class Figura {
         //Para actualizar el estado de la figura:  detectar cercanias,exploraciones picking, localizacion (cuadrantes, mundos)
         //Para actualizar el estado del entorno:  lo puede hacer la misma figura, una figura coordinara, o el mismo juego
 
- //Opcional: ACTUALIZACION DE PLANIFICACION A LARGO PLAZAO
+        //Opcional: ACTUALIZACION DE PLANIFICACION A LARGO PLAZAO
         //Dependiendo del objetivo a conseguir ejecutar un plan a largo plazo
- //REGLAS DE MOVIMIENTO A CORTO PLAZO DE LA FIGURA DEPENDIENDO DE SU ESTADO, DEL ENTORNO Y DEL ESTADO DEL JUEGO
+        //REGLAS DE MOVIMIENTO A CORTO PLAZO DE LA FIGURA DEPENDIENDO DE SU ESTADO, DEL ENTORNO Y DEL ESTADO DEL JUEGO
         //ejemplo: C—digo de actualizar() del programa  Navegador_Tema_3
         if (localizacionObjetivo != null) {
             Vector3f direccion = new Vector3f(localizacionObjetivo.x - posiciones[0], 0f, localizacionObjetivo.z - posiciones[2]);
