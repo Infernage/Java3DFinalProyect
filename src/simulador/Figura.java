@@ -138,7 +138,7 @@ public class Figura {
         //Opcional: ACTUALIZACION DE PLANIFICACION A LARGO PLAZAO
         //Dependiendo del objetivo a conseguir ejecutar un plan a largo plazo
         //REGLAS DE MOVIMIENTO A CORTO PLAZO DE LA FIGURA DEPENDIENDO DE SU ESTADO, DEL ENTORNO Y DEL ESTADO DEL JUEGO
-        //ejemplo: C—digo de actualizar() del programa  Navegador_Tema_3
+        //ejemplo: Cï¿½digo de actualizar() del programa  Navegador_Tema_3
         if (localizacionObjetivo != null) {
             Vector3f direccion = new Vector3f(localizacionObjetivo.x - posiciones[0], 0f, localizacionObjetivo.z - posiciones[2]);
             direccion.normalize();                                                                           //El vector se normaliza con 1 para que indique solo la direccion.
@@ -159,7 +159,7 @@ public class Figura {
         this.aceleracionMuscular = aceleracionMuscular;
     }
 
-    Vector3d conseguirDireccionFrontal() {
+    public Vector3d conseguirDireccionFrontal() {
         Transform3D t3dPersonaje = new Transform3D();
         this.desplazamientoFigura.getTransform(t3dPersonaje);
         Transform3D copiat3dPersonaje = new Transform3D(t3dPersonaje);
