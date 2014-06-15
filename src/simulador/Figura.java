@@ -67,6 +67,7 @@ public class Figura {
         cuerpoRigido.setActivationState(RigidBody.DISABLE_DEACTIVATION);
         cuerpoRigido.setDamping(dampingLineal, 0.1f);   //a�ade m�s (1) o menos  (0) "friccion del aire" al desplazarse/caer o rotar
         cuerpoRigido.setFriction(0.3f);
+        cuerpoRigido.setAngularFactor(0);
         //A�adiendo el cuerpoRigido al mundoFisico
         mundoFisico.addRigidBody(cuerpoRigido); // add the body to the dynamics world
         identificadorFisico = mundoFisico.getNumCollisionObjects() - 1;

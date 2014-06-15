@@ -34,7 +34,7 @@ public class EsferaMDL extends Figura {
         texAttr.setTextureMode(TextureAttributes.MODULATE);
         apariencia.setTextureAttributes(texAttr);
 
-     //Creacion de la forma visual MDL
+        //Creacion de la forma visual MDL
         //nombre = "figura_MDL_" + identificador;
         //Sphere figuraVisual = new Sphere(radio);
         TransformGroup figuraVisual = crearObjetoMDL(ficheroMDL, radio * 2, player2);

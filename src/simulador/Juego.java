@@ -9,7 +9,10 @@ import com.sun.j3d.utils.universe.SimpleUniverse;
 import com.bulletphysics.dynamics.*;
 import com.bulletphysics.collision.broadphase.AxisSweep3;
 import com.bulletphysics.collision.dispatch.*;
+import com.bulletphysics.collision.narrowphase.ManifoldPoint;
+import com.bulletphysics.collision.narrowphase.PersistentManifold;
 import com.bulletphysics.dynamics.constraintsolver.SequentialImpulseConstraintSolver;
+import com.bulletphysics.linearmath.Transform;
 import figuras.Esfera;
 import figuras.EsferaMDL;
 
@@ -30,6 +33,7 @@ public class Juego extends JFrame implements Runnable {
     public float tiempoJuego;
     // Pesonajes importantes del juego
     Figura personaje;  //golem;
+    Figura personaje2;
     Figura perseguidor;
 
     public Juego() {
@@ -123,6 +127,9 @@ public class Juego extends JFrame implements Runnable {
         personaje = new EsferaMDL("objetosMDL/Air_Elemental.mdl", radio, conjunto, listaObjetosFisicos, this, true, false);
         personaje.crearPropiedades(masa, elasticidad, 0.5f, posX, posY, POS_PJ1, mundoFisico);
         personaje.cuerpoRigido.setDamping(dampingLineal, dampingAngular);
+        personaje2 = new EsferaMDL("objetosMDL/Air_Elemental.mdl", radio, conjunto, listaObjetosFisicos, this, false, true);
+        personaje2.crearPropiedades(masa, elasticidad, 0.5f, posX, posY, POS_PJ2, mundoFisico);
+        personaje2.cuerpoRigido.setDamping(dampingLineal, dampingAngular);
 
         //Creando un Agente (es decir, un personaje aut�nomo) con el objetivo de perseguir al personaje controlado por teclado
         perseguidor = new Esfera(radio, "texturas/balon.jpg", conjunto, listaObjetosFisicos, this);
@@ -156,13 +163,16 @@ public class Juego extends JFrame implements Runnable {
         }
 
         //ACTUALIZAR DATOS DE FUERZAS DEL PERSONAJE CONTROLADO POR EL JUGADOR
+        Vector3d direccionFrente2 = personaje2.conseguirDireccionFrontal();
+        Vector3d direccionFrente1 = personaje.conseguirDireccionFrontal();
         if (personaje != null) {
             float fuerzaHaciaAdelante = 0, fuerzaVertical = 0;
+            boolean disableVelocity = false;
             if (personaje.adelante) {
-                fuerzaHaciaAdelante = personaje.masa * 10f;
+                fuerzaHaciaAdelante = personaje.masa * 5f;
             }
             if (personaje.atras) {
-                fuerzaHaciaAdelante = -personaje.masa * 10f;
+                fuerzaHaciaAdelante = -personaje.masa * 5f;
             }
             if (personaje.saltar) {
                 fuerzaVertical = ((int) personaje.posiciones[1]) == -2 ? 10F : 0F;
@@ -172,29 +182,80 @@ public class Juego extends JFrame implements Runnable {
             }
 
             if (((int) personaje.posiciones[2]) >= POS_SCENE_L || ((int) personaje.posiciones[2]) <= POS_SCENE_R) {
+                personaje.cuerpoRigido.clearForces();
                 if (((int) personaje.posiciones[2]) > POS_SCENE_L) {
-                    personaje.cuerpoRigido.applyCentralImpulse(new Vector3f(0, 0, -10F));
+                    disableVelocity = true;
+                    fuerzaHaciaAdelante = 0;
+                    personaje.cuerpoRigido.setLinearVelocity(new Vector3f((float) direccionFrente2.x
+                            * -10F * 0.1f, 0, (float) direccionFrente2.z * -10F * 0.1f));
                 } else if (((int) personaje.posiciones[2]) < POS_SCENE_R) {
-                    personaje.cuerpoRigido.applyCentralImpulse(new Vector3f(0, 0, 10F));
+                    disableVelocity = true;
+                    personaje.cuerpoRigido.setLinearVelocity(new Vector3f((float) direccionFrente2.x
+                            * 10F * 0.1f, 0, (float) direccionFrente2.z * 10F * 0.1f));
+                    fuerzaHaciaAdelante = 0;
                 }
                 if (((int) personaje.posiciones[2]) >= POS_SCENE_L && (personaje.player2 ? personaje.adelante : personaje.atras)) {
                     fuerzaHaciaAdelante = 0;
-                    personaje.cuerpoRigido.clearForces();
                 } else if (((int) personaje.posiciones[2]) <= POS_SCENE_R && (personaje.player2 ? personaje.atras
                         : personaje.adelante)) {
                     fuerzaHaciaAdelante = 0;
-                    personaje.cuerpoRigido.clearForces();
                 }
             }
 
-            Vector3d direccionFrente = personaje.conseguirDireccionFrontal();
             if (personaje.saltar || ((int) personaje.posiciones[1]) != -2) {
-                personaje.cuerpoRigido.applyCentralForce(new Vector3f((float) direccionFrente.x * fuerzaHaciaAdelante * 0.1f, 0, (float) direccionFrente.z * fuerzaHaciaAdelante * 0.1f));
+                personaje.cuerpoRigido.applyCentralForce(new Vector3f((float) direccionFrente1.x * fuerzaHaciaAdelante * 0.1f, 0, (float) direccionFrente1.z * fuerzaHaciaAdelante * 0.1f));
                 personaje.cuerpoRigido.applyCentralImpulse(new Vector3f(0, fuerzaVertical, 0));
             } else {
-                personaje.cuerpoRigido.setLinearVelocity(new Vector3f((float) direccionFrente.x * fuerzaHaciaAdelante * 0.1f, 0, (float) direccionFrente.z * fuerzaHaciaAdelante * 0.1f));
+                if (!disableVelocity) {
+                    personaje.cuerpoRigido.setLinearVelocity(new Vector3f((float) direccionFrente1.x * fuerzaHaciaAdelante * 0.1f, 0, (float) direccionFrente1.z * fuerzaHaciaAdelante * 0.1f));
+                }
             }
             personaje.cuerpoRigido.applyTorque(new Vector3f(0, 0, 0));
+        }
+        if (personaje2 != null) {
+            float fuerzaHaciaAdelante = 0, fuerzaVertical = 0;
+            boolean disableVelocity = false;
+            if (personaje2.adelante) {
+            fuerzaHaciaAdelante = personaje2.masa * 10f;
+            }
+            if (personaje2.atras) {
+                fuerzaHaciaAdelante = -personaje2.masa * 10f;
+            }
+            if (personaje2.saltar) {
+                fuerzaVertical = ((int) personaje2.posiciones[1]) == -2 ? 10F : 0F;
+            }
+            if (!personaje2.player2) {
+                fuerzaHaciaAdelante = -fuerzaHaciaAdelante;
+            }
+
+            if (((int) personaje2.posiciones[2]) >= POS_SCENE_L || ((int) personaje2.posiciones[2]) <= POS_SCENE_R) {
+                personaje2.cuerpoRigido.clearForces();
+                if (((int) personaje2.posiciones[2]) > POS_SCENE_L) {
+                    disableVelocity = true;
+                    fuerzaHaciaAdelante = 0;
+                    personaje2.cuerpoRigido.setLinearVelocity(new Vector3f(0, 0, (float) direccionFrente2.z * -10F * 0.1f));
+                } else if (((int) personaje2.posiciones[2]) < POS_SCENE_R) {
+                    disableVelocity = true;
+                    personaje2.cuerpoRigido.setLinearVelocity(new Vector3f(0, 0, (float) direccionFrente2.z * 10F * 0.1f));
+                    fuerzaHaciaAdelante = 0;
+                }
+                if (((int) personaje2.posiciones[2]) >= POS_SCENE_L && (personaje2.player2 ? personaje2.adelante : personaje2.atras)) {
+                    fuerzaHaciaAdelante = 0;
+                } else if (((int) personaje2.posiciones[2]) <= POS_SCENE_R && (personaje2.player2 ? personaje2.atras
+                        : personaje2.adelante)) {
+                    fuerzaHaciaAdelante = 0;
+                }
+            }
+
+            if (personaje2.saltar || ((int) personaje2.posiciones[1]) != -2) {
+                personaje2.cuerpoRigido.applyCentralForce(new Vector3f(0, 0, (float) direccionFrente2.z * fuerzaHaciaAdelante * 0.1f));
+                personaje2.cuerpoRigido.applyCentralImpulse(new Vector3f(0, fuerzaVertical, 0));
+            } else {
+                if (!disableVelocity) {
+                    personaje2.cuerpoRigido.setLinearVelocity(new Vector3f(0, 0, (float) direccionFrente2.z * fuerzaHaciaAdelante * 0.1f));
+                }
+            }
+            personaje2.cuerpoRigido.applyTorque(new Vector3f(0, 0, 0));
         }
 
         //ACTUALIZAR DATOS DE FUERZAS DE LAS FIGURAS AUTONOMAS  (ej. para que cada figura pueda persiguir su objetivo)
@@ -204,13 +265,67 @@ public class Juego extends JFrame implements Runnable {
 
         //ACTUALIZAR DATOS DE LOCALIZACION DE FIGURAS FISICAS
         this.actualizandoFisicas = true;
+        float ataque = -20f, ataqueFuerte = -40f;
         try {
             mundoFisico.stepSimulation(dt);    //mundoFisico.stepSimulation ( dt  ,50000, dt*0.2f);
+            int maniFolds = mundoFisico.getDispatcher().getNumManifolds();
+            for (int i = 0; i < maniFolds; i++) {
+                PersistentManifold fold = mundoFisico.getDispatcher().getManifoldByIndexInternal(i);
+                CollisionObject a = (CollisionObject) fold.getBody0(), b = (CollisionObject) fold.getBody1();
+                int contacts = fold.getNumContacts();
+                for (int j = 0; j < contacts; j++) {
+                    ManifoldPoint point = fold.getContactPoint(j);
+                    if (point.getDistance() < 0.f) {
+                        if (mundoFisico.getCollisionObjectArray()
+                                .get(personaje.identificadorFisico).equals(a) && mundoFisico.getCollisionObjectArray()
+                                .get(personaje2.identificadorFisico).equals(b)) {
+                            if (personaje.ataque) {
+                                System.out.println("AAAAAAA");
+                                personaje2.cuerpoRigido.setLinearVelocity(new Vector3f(0, 0,
+                                        (float) direccionFrente2.z * ataque * 0.1f));
+                            } else if (personaje.ataqueFuerte) {
+                                personaje2.cuerpoRigido.setLinearVelocity(new Vector3f(0, 0,
+                                        (float) direccionFrente2.z * ataqueFuerte * 0.1f));
+                            } else if (personaje2.ataque) {
+                                personaje.cuerpoRigido.setLinearVelocity(new Vector3f(0, 0,
+                                        (float) direccionFrente1.z * -ataque * 0.1f));
+                            } else if (personaje2.ataqueFuerte) {
+                                personaje.cuerpoRigido.setLinearVelocity(new Vector3f(0, 0,
+                                        (float) direccionFrente1.z * -ataqueFuerte * 0.1f));
+                            }
+                        } else if (mundoFisico.getCollisionObjectArray()
+                                .get(personaje.identificadorFisico).equals(b) && mundoFisico.getCollisionObjectArray()
+                                .get(personaje2.identificadorFisico).equals(a)) {
+                            if (personaje.ataque) {
+                                personaje2.cuerpoRigido.setLinearVelocity(new Vector3f(0, 0,
+                                        (float) direccionFrente2.z * ataque * 0.1f));
+                            } else if (personaje.ataqueFuerte) {
+                                personaje2.cuerpoRigido.setLinearVelocity(new Vector3f(0, 0,
+                                        (float) direccionFrente2.z * ataqueFuerte * 0.1f));
+                            } else if (personaje2.ataque) {
+                                personaje.cuerpoRigido.setLinearVelocity(new Vector3f(0, 0,
+                                        (float) direccionFrente1.z * -ataque * 0.1f));
+                            } else if (personaje2.ataqueFuerte) {
+                                personaje.cuerpoRigido.setLinearVelocity(new Vector3f(0, 0,
+                                        (float) direccionFrente1.z * -ataqueFuerte * 0.1f));
+                            }
+                        }
+                    }
+                }
+            }
+            mundoFisico.stepSimulation(dt);
+            Transform t = new Transform();
+            personaje.cuerpoRigido.getWorldTransform(t);
+            t.origin.x = 20f;
+            personaje.cuerpoRigido.setWorldTransform(t);
+            personaje2.cuerpoRigido.getWorldTransform(t);
+            t.origin.x = 20f;
+            personaje2.cuerpoRigido.setWorldTransform(t);
+            mundoFisico.stepSimulation(dt);
         } catch (Exception e) {
             System.out.println("JBullet forzado. No debe crearPropiedades de solidoRigidos durante la actualizacion stepSimulation");
         }
         this.actualizandoFisicas = false;
-        tiempoJuego = tiempoJuego + dt;
     }
 
     void mostrar() throws Exception {
