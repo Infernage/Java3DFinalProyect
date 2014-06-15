@@ -21,6 +21,7 @@ public class EsferaMDL extends Figura {
             nombreAnimacionLuchandoFuerte, nombreAnimacionParando;
     Vector3d direccion = new Vector3d(0, 0, 10);
     public float radio, alturaP, alturaDeOjos;
+    
 
     public EsferaMDL(String ficheroMDL, float radio, BranchGroup conjunto, ArrayList<Figura> listaObjetos,
             Juego juego, boolean esPersonaje, boolean player2) {
@@ -44,7 +45,7 @@ public class EsferaMDL extends Figura {
         ramaVisible.addChild(desplazamientoFigura);
         desplazamientoFigura.addChild(figuraVisual);
 
-        //Creaci—n de detector de teclas asociado a este cono
+        //Creaciï¿½n de detector de teclas asociado a este cono
         if (esPersonaje) {
             DeteccionControlPersonaje mueve = new DeteccionControlPersonaje(this, player2);
             mueve.setSchedulingBounds(new BoundingSphere(new Point3d(0.0, 0.0, 0.0), 100.0));

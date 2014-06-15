@@ -35,6 +35,7 @@ public class Juego extends JFrame implements Runnable {
     Figura personaje;  //golem;
     Figura personaje2;
     Figura perseguidor;
+    LifeBar lifeBar1, lifeBar2;
 
     public Juego() {
         CollisionConfiguration collisionConfiguration = new DefaultCollisionConfiguration();
@@ -138,6 +139,10 @@ public class Juego extends JFrame implements Runnable {
         }
        //perseguidor.asignarObjetivo(personaje,15f);   //Este objetivo de perseguir DEBE actualizado para que persiga la nueva posicion del personaje
 
+        //Barra de vida
+        lifeBar1 = new LifeBar(personaje, conjunto, true);
+        lifeBar2 = new LifeBar(personaje2, conjunto, false);
+
         //Creacion de un Terreno Simple (no es una figura, no es movil, tiene masa 0)
         float friccion = 0.5f;
         utilidades.TerrenoSimple terreno = new utilidades.TerrenoSimple(150, 150, 3, -3f, -4, "unaTextura_Desabilitada", conjunto, mundoFisico, friccion);
@@ -161,6 +166,10 @@ public class Juego extends JFrame implements Runnable {
                 System.out.println("Fin del juego");
             }
         }
+
+        //Actualizar barras de vida
+        lifeBar1.actualizar();
+        lifeBar2.actualizar();
 
         //ACTUALIZAR DATOS DE FUERZAS DEL PERSONAJE CONTROLADO POR EL JUGADOR
         Vector3d direccionFrente2 = personaje2.conseguirDireccionFrontal();
@@ -216,7 +225,7 @@ public class Juego extends JFrame implements Runnable {
             float fuerzaHaciaAdelante = 0, fuerzaVertical = 0;
             boolean disableVelocity = false;
             if (personaje2.adelante) {
-            fuerzaHaciaAdelante = personaje2.masa * 10f;
+                fuerzaHaciaAdelante = personaje2.masa * 10f;
             }
             if (personaje2.atras) {
                 fuerzaHaciaAdelante = -personaje2.masa * 10f;
@@ -313,6 +322,7 @@ public class Juego extends JFrame implements Runnable {
                     }
                 }
             }
+
             mundoFisico.stepSimulation(dt);
             Transform t = new Transform();
             personaje.cuerpoRigido.getWorldTransform(t);
@@ -353,11 +363,11 @@ public class Juego extends JFrame implements Runnable {
         float dt = 3f / 100f;
         int tiempoDeEspera = (int) (dt * 1000);
         while (estadoJuego != -1) {
-            try {
-                actualizar(dt);
-            } catch (Exception e) {
-                System.out.println("Error durante actualizar. Estado del juego " + estadoJuego);
-            }
+             try {
+            actualizar(dt);
+              } catch (Exception e) {
+                   System.out.println("Error durante actualizar. Estado del juego " + estadoJuego);
+               }
             try {
                 Thread.sleep(tiempoDeEspera);
             } catch (Exception e) {

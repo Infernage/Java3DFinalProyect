@@ -27,6 +27,7 @@ public class Figura {
     Matrix3f matrizRotacionPersonaje = new Matrix3f();
     Juego juego;
     protected boolean esPersonaje;
+    public float vida=100;
 
     //atributos opcionales para dotar a la figura de cierta inteligencia
     public Vector3f localizacionObjetivo;
