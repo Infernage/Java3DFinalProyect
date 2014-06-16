@@ -94,6 +94,7 @@ public class DeteccionControlPersonaje extends javax.media.j3d.Behavior {
                                 personaje.ataqueFuerte = false;
                             } else if (ek.getKeyChar() == 'c'){
                                 personaje.parar = false;
+                                pj.ab.playDefaultAnimation();
                             } else if (ek.getKeyChar() == 'w'){
                                 personaje.saltar = false;
                             }

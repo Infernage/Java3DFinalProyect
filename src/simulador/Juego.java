@@ -34,8 +34,8 @@ public class Juego extends JFrame implements Runnable {
     // Pesonajes importantes del juego
     Figura personaje;  //golem;
     Figura personaje2;
-    Figura perseguidor;
     LifeBar lifeBar1, lifeBar2;
+    ControladorIA ai;
 
     public Juego() {
         CollisionConfiguration collisionConfiguration = new DefaultCollisionConfiguration();
@@ -131,12 +131,13 @@ public class Juego extends JFrame implements Runnable {
         personaje2 = new EsferaMDL("objetosMDL/Air_Elemental.mdl", radio, conjunto, listaObjetosFisicos, this, false, true);
         personaje2.crearPropiedades(masa, elasticidad, 0.5f, posX, posY, POS_PJ2, mundoFisico);
         personaje2.cuerpoRigido.setDamping(dampingLineal, dampingAngular);
+        ai = new ControladorIA((EsferaMDL) personaje, (EsferaMDL) personaje2);
 
         //Creando un Agente (es decir, un personaje aut�nomo) con el objetivo de perseguir al personaje controlado por teclado
-        perseguidor = new Esfera(radio, "texturas/balon.jpg", conjunto, listaObjetosFisicos, this);
+        /*perseguidor = new Esfera(radio, "texturas/balon.jpg", conjunto, listaObjetosFisicos, this);
         if (!actualizandoFisicas) {
             perseguidor.crearPropiedades(masa, elasticidad, dampingLineal, 20, 4, -15, mundoFisico);
-        }
+        }*/
        //perseguidor.asignarObjetivo(personaje,15f);   //Este objetivo de perseguir DEBE actualizado para que persiga la nueva posicion del personaje
 
         //Barra de vida
@@ -170,6 +171,8 @@ public class Juego extends JFrame implements Runnable {
         //Actualizar barras de vida
         lifeBar1.actualizar();
         lifeBar2.actualizar();
+        
+        ai.comprobarEstado();
 
         //ACTUALIZAR DATOS DE FUERZAS DEL PERSONAJE CONTROLADO POR EL JUGADOR
         Vector3d direccionFrente2 = personaje2.conseguirDireccionFrontal();
@@ -289,16 +292,19 @@ public class Juego extends JFrame implements Runnable {
                                 .get(personaje.identificadorFisico).equals(a) && mundoFisico.getCollisionObjectArray()
                                 .get(personaje2.identificadorFisico).equals(b)) {
                             if (personaje.ataque) {
-                                System.out.println("AAAAAAA");
+                                if (!personaje2.parar) personaje2.vida += ataque;
                                 personaje2.cuerpoRigido.setLinearVelocity(new Vector3f(0, 0,
                                         (float) direccionFrente2.z * ataque * 0.1f));
                             } else if (personaje.ataqueFuerte) {
+                                if (!personaje2.parar) personaje2.vida += ataqueFuerte;
                                 personaje2.cuerpoRigido.setLinearVelocity(new Vector3f(0, 0,
                                         (float) direccionFrente2.z * ataqueFuerte * 0.1f));
                             } else if (personaje2.ataque) {
+                                if (!personaje.parar) personaje.vida += ataque;
                                 personaje.cuerpoRigido.setLinearVelocity(new Vector3f(0, 0,
                                         (float) direccionFrente1.z * -ataque * 0.1f));
                             } else if (personaje2.ataqueFuerte) {
+                                if (!personaje.parar) personaje.vida += ataqueFuerte;
                                 personaje.cuerpoRigido.setLinearVelocity(new Vector3f(0, 0,
                                         (float) direccionFrente1.z * -ataqueFuerte * 0.1f));
                             }
@@ -306,15 +312,19 @@ public class Juego extends JFrame implements Runnable {
                                 .get(personaje.identificadorFisico).equals(b) && mundoFisico.getCollisionObjectArray()
                                 .get(personaje2.identificadorFisico).equals(a)) {
                             if (personaje.ataque) {
+                                if (!personaje2.parar) personaje2.vida += ataque;
                                 personaje2.cuerpoRigido.setLinearVelocity(new Vector3f(0, 0,
                                         (float) direccionFrente2.z * ataque * 0.1f));
                             } else if (personaje.ataqueFuerte) {
+                                if (!personaje2.parar) personaje2.vida += ataqueFuerte;
                                 personaje2.cuerpoRigido.setLinearVelocity(new Vector3f(0, 0,
                                         (float) direccionFrente2.z * ataqueFuerte * 0.1f));
                             } else if (personaje2.ataque) {
+                                if (!personaje.parar) personaje.vida += ataque;
                                 personaje.cuerpoRigido.setLinearVelocity(new Vector3f(0, 0,
                                         (float) direccionFrente1.z * -ataque * 0.1f));
                             } else if (personaje2.ataqueFuerte) {
+                                if (!personaje.parar) personaje.vida += ataqueFuerte;
                                 personaje.cuerpoRigido.setLinearVelocity(new Vector3f(0, 0,
                                         (float) direccionFrente1.z * -ataqueFuerte * 0.1f));
                             }
