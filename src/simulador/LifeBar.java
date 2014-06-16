@@ -85,7 +85,7 @@ public class LifeBar {
     public void actualizar() {
         float porcentaje;
 
-        if (personaje.vida > 0 && vidaAnterior != personaje.vida) {
+        if (personaje.vida >= 0 && vidaAnterior != personaje.vida) {
             if (player) {
                 porcentaje = personaje.vida / 100;
                 lifeBar.setCoordinate(0, new Point3f(posx, posy, posz - (width * porcentaje)));
@@ -97,8 +97,21 @@ public class LifeBar {
                 lifeBar.setCoordinate(3, new Point3f(posx, posy, posz + (width * porcentaje)));
 
             }
-
+            
             vidaAnterior = personaje.vida;
+        }else if (personaje.vida<0 && vidaAnterior != personaje.vida ){
+             if (player) {
+                porcentaje =0;
+                lifeBar.setCoordinate(0, new Point3f(posx, posy, posz - (width * porcentaje)));
+                lifeBar.setCoordinate(1, new Point3f(posx, posy + 1, posz - (width * porcentaje)));
+
+            } else {
+                porcentaje = 0;
+                lifeBar.setCoordinate(2, new Point3f(posx, posy + 1, posz + (width * porcentaje)));
+                lifeBar.setCoordinate(3, new Point3f(posx, posy, posz + (width * porcentaje)));
+
+            }
+              vidaAnterior = personaje.vida;
         }
     }
 

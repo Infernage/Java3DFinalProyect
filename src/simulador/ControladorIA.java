@@ -6,6 +6,7 @@
 package simulador;
 
 import figuras.EsferaMDL;
+import java.util.Random;
 import javax.vecmath.Vector3d;
 import javax.vecmath.Vector3f;
 
@@ -18,6 +19,7 @@ public class ControladorIA {
     Figura jugador;
     EsferaMDL bot;
     private int timer = 0;
+    Random rnd = new Random();
 
     public ControladorIA(EsferaMDL jugador_, EsferaMDL bot_) {
         jugador = jugador_;
@@ -47,7 +49,11 @@ public class ControladorIA {
                     bot.saltar = false;
                     timer = 30;
                 } else if (!bot.ataque && !bot.ataqueFuerte) {
-                    bot.ataque = true;
+                    if (rnd.nextBoolean()) {
+                        bot.ataque = true;
+                    } else {
+                        bot.ataqueFuerte = true;
+                    }
                     bot.adelante = false;
                     bot.atras = false;
                     bot.saltar = false;
