@@ -280,7 +280,7 @@ public class Juego extends JFrame implements Runnable {
         float ataque = -20f, ataqueFuerte = -40f;
         try {
             mundoFisico.stepSimulation(dt);    //mundoFisico.stepSimulation ( dt  ,50000, dt*0.2f);
-            int maniFolds = mundoFisico.getDispatcher().getNumManifolds();
+            /*int maniFolds = mundoFisico.getDispatcher().getNumManifolds();
             for (int i = 0; i < maniFolds; i++) {
                 PersistentManifold fold = mundoFisico.getDispatcher().getManifoldByIndexInternal(i);
                 CollisionObject a = (CollisionObject) fold.getBody0(), b = (CollisionObject) fold.getBody1();
@@ -330,6 +330,28 @@ public class Juego extends JFrame implements Runnable {
                             }
                         }
                     }
+                }
+            }*/
+            
+            float distancia = personaje.posiciones[2] - personaje2.posiciones[2];
+            if (distancia <= 2.1f && distancia > 0){
+                if (personaje.ataque){
+                    if (!personaje2.parar) personaje2.vida += ataque;
+                    personaje2.cuerpoRigido.setLinearVelocity(new Vector3f(0, 0,
+                                        (float) direccionFrente1.z * -ataque * 0.1f));
+                } else if (personaje.ataqueFuerte){
+                    if (!personaje2.parar) personaje2.vida += ataqueFuerte;
+                    personaje2.cuerpoRigido.setLinearVelocity(new Vector3f(0, 0,
+                                        (float) direccionFrente1.z * -ataqueFuerte * 0.1f));
+                }
+                if (personaje2.ataque){
+                    if (!personaje.parar) personaje.vida += ataque;
+                    personaje.cuerpoRigido.setLinearVelocity(new Vector3f(0, 0,
+                                        (float) direccionFrente1.z * -ataque * 0.1f));
+                } else if (personaje2.ataqueFuerte){
+                    if (!personaje.parar) personaje.vida += ataqueFuerte;
+                    personaje.cuerpoRigido.setLinearVelocity(new Vector3f(0, 0,
+                                        (float) direccionFrente1.z * -ataqueFuerte * 0.1f));
                 }
             }
 

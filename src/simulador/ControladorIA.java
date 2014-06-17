@@ -30,25 +30,25 @@ public class ControladorIA {
         float distancia;
         distancia = jugador.posiciones[2] - bot.posiciones[2];
         if (!bot.atras || distancia >= 6f) {
-            if (distancia > 2.1f) {
+            if (distancia > 2.1f) { // Adelante
                 bot.adelante = true;
                 bot.parar = bot.ataque = bot.atras = bot.saltar = bot.ataqueFuerte = false;
-            } else if (distancia < 2.1f && distancia > 0 && timer == 0) {
+            } else if (distancia < 2.1f && distancia > 0 && timer == 0) { // Atacar
                 bot.adelante = false;
                 if (bot.saltar) {
                     bot.atras = bot.saltar = false;
                 }
-                if (jugador.ataque && (!bot.ataque && !bot.ataqueFuerte)) {
+                if (rnd.nextInt(100) < 75 && jugador.ataque && (!bot.ataque && !bot.ataqueFuerte)) { // Parar
                     bot.parar = true;
-                } else if ((jugador.ataqueFuerte || jugador.saltar) && (!bot.ataque && !bot.ataqueFuerte)) {
+                } else if (rnd.nextInt(100) < 75 && (jugador.ataqueFuerte || jugador.saltar) && (!bot.ataque && !bot.ataqueFuerte)) { // Atras
                     bot.atras = true;
-                } else if (jugador.parar && (!bot.ataque && !bot.ataqueFuerte)) {
+                } else if (rnd.nextInt(100) < 75 && jugador.parar && (!bot.ataque && !bot.ataqueFuerte)) { // Ataque fuerte
                     bot.ataqueFuerte = true;
                     bot.adelante = false;
                     bot.atras = false;
                     bot.saltar = false;
                     timer = 30;
-                } else if (!bot.ataque && !bot.ataqueFuerte) {
+                } else if (rnd.nextInt(100) < 75 && !bot.ataque && !bot.ataqueFuerte) { // Ataque
                     if (rnd.nextBoolean()) {
                         bot.ataque = true;
                     } else {
@@ -59,25 +59,25 @@ public class ControladorIA {
                     bot.saltar = false;
                     timer = 30;
                 }
-            } else if (timer == 30) {
+            } else if (timer == 30) { // Timer atacar
                 if (bot.ataque) {
                     bot.ataque = false;
                 } else if (bot.ataqueFuerte) {
                     bot.ataqueFuerte = false;
                 }
                 timer--;
-            } else if (timer <= 30 && timer > 0) {
+            } else if (timer <= 30 && timer > 0) { // Timer
                 timer--;
-            } else if (distancia < -2.1f) {
+            } else if (distancia < -2.1f) { // Ponerse delante (Evitar obstáculos)
                 bot.atras = true;
                 bot.parar = bot.saltar = bot.ataque = bot.adelante = bot.ataqueFuerte = false;
             }
-        } else if (bot.atras && distancia > -2.1f && distancia < 0) {
+        } else if (bot.atras && distancia > -2.1f && distancia < 0) { // Saltar
             bot.saltar = true;
-        } else if (distancia < -2.1f) {
+        } else if (distancia < -2.1f) { // Ponerse delante (Evitar obstáculos)
             bot.atras = true;
             bot.parar = bot.saltar = bot.ataque = bot.adelante = bot.ataqueFuerte = false;
-        } else if (distancia > 0 && bot.saltar) {
+        } else if (distancia > 0 && bot.saltar) { // Volver a normal
             bot.saltar = false;
         }
 
