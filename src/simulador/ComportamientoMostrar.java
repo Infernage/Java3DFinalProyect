@@ -6,9 +6,9 @@ import javax.media.j3d.WakeupOnElapsedFrames;
 
 public class ComportamientoMostrar extends Behavior {
    WakeupOnElapsedFrames framewake = new WakeupOnElapsedFrames(0, true);
-   Juego juego;
+   AbstractGame juego;
 
-public ComportamientoMostrar(Juego juego_ ) {
+public ComportamientoMostrar(AbstractGame juego_ ) {
      juego = juego_;
 }
 

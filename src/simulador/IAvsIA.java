@@ -18,7 +18,7 @@ import com.sun.j3d.utils.geometry.Text2D;
 import figuras.Esfera;
 import figuras.EsferaMDL;
 
-public class Juego extends AbstractGame{
+public class IAvsIA extends AbstractGame{
 
     public static final int POS_SCENE_L = 41, POS_SCENE_R = 19, POS_PJ1 = 32, POS_PJ2 = 28;
 
@@ -36,8 +36,9 @@ public class Juego extends AbstractGame{
     Figura personaje2;
     LifeBar lifeBar1, lifeBar2;
     ControladorIA ai;
+    ControladorIA ai2;
 
-    public Juego() {
+    public IAvsIA() {
         CollisionConfiguration collisionConfiguration = new DefaultCollisionConfiguration();
         CollisionDispatcher dispatcher = new CollisionDispatcher(collisionConfiguration);
         Vector3f worldAabbMin = new Vector3f(-10000, -10000, -10000);
@@ -125,14 +126,14 @@ public class Juego extends AbstractGame{
         float elasticidad = 0.5f;
         float dampingLineal = 0.5f;
         float dampingAngular = 0.9f;
-        personaje = new EsferaMDL("objetosMDL/Air_Elemental.mdl", radio, conjunto, listaObjetosFisicos, this, true, false);
+        personaje = new EsferaMDL("objetosMDL/Air_Elemental.mdl", radio, conjunto, listaObjetosFisicos, this, false, false);
         personaje.crearPropiedades(masa, elasticidad, 0.5f, posX, posY, POS_PJ1, mundoFisico);
         personaje.cuerpoRigido.setDamping(dampingLineal, dampingAngular);
         personaje2 = new EsferaMDL("objetosMDL/Air_Elemental.mdl", radio, conjunto, listaObjetosFisicos, this, false, true);
         personaje2.crearPropiedades(masa, elasticidad, 0.5f, posX, posY, POS_PJ2, mundoFisico);
         personaje2.cuerpoRigido.setDamping(dampingLineal, dampingAngular);
         ai = new ControladorIA((EsferaMDL) personaje, (EsferaMDL) personaje2);
-
+        ai2 = new ControladorIA((EsferaMDL) personaje2, (EsferaMDL) personaje);
         //Creando un Agente (es decir, un personaje aut�nomo) con el objetivo de perseguir al personaje controlado por teclado
         /*perseguidor = new Esfera(radio, "texturas/balon.jpg", conjunto, listaObjetosFisicos, this);
          if (!actualizandoFisicas) {
@@ -189,6 +190,7 @@ public class Juego extends AbstractGame{
         lifeBar2.actualizar();
 
         ai.comprobarEstado();
+        ai2.comprobarEstado();
 
         //ACTUALIZAR DATOS DE FUERZAS DEL PERSONAJE CONTROLADO POR EL JUGADOR
         Vector3d direccionFrente2 = personaje2.conseguirDireccionFrontal();
@@ -389,7 +391,8 @@ public class Juego extends AbstractGame{
             personaje2.cuerpoRigido.setWorldTransform(t);
             mundoFisico.stepSimulation(dt);
         } catch (Exception e) {
-            System.out.println("JBullet forzado. No debe crearPropiedades de solidoRigidos durante la actualizacion stepSimulation");
+            e.printStackTrace();
+            //System.out.println("JBullet forzado. No debe crearPropiedades de solidoRigidos durante la actualizacion stepSimulation");
         }
         this.actualizandoFisicas = false;
     }
@@ -455,7 +458,7 @@ public class Juego extends AbstractGame{
     }
 
     public static void principal(String[] args) {
-        game = new Juego();
+        game = new IAvsIA();
         game.setTitle("Juego");
         game.setSize(1000, 800);
         game.setVisible(true);

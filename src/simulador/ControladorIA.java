@@ -29,6 +29,7 @@ public class ControladorIA {
     public void comprobarEstado() {
         float distancia;
         distancia = jugador.posiciones[2] - bot.posiciones[2];
+        if (jugador.player2) distancia = -distancia;
         if (!bot.atras || distancia >= 6f) {
             if (distancia > 2.1f) { // Adelante
                 bot.adelante = true;
@@ -38,17 +39,20 @@ public class ControladorIA {
                 if (bot.saltar) {
                     bot.atras = bot.saltar = false;
                 }
-                if (rnd.nextInt(100) < 75 && jugador.ataque && (!bot.ataque && !bot.ataqueFuerte)) { // Parar
+                if (rnd.nextBoolean()){
+                    bot.saltar = true;
+                } else if ((jugador.ataque && (!bot.ataque && !bot.ataqueFuerte))) { // Parar
                     bot.parar = true;
-                } else if (rnd.nextInt(100) < 75 && (jugador.ataqueFuerte || jugador.saltar) && (!bot.ataque && !bot.ataqueFuerte)) { // Atras
+                } else if (rnd.nextInt(100) < 75 || ((jugador.ataqueFuerte || jugador.saltar) && 
+                        (!bot.ataque && !bot.ataqueFuerte))) { // Atras
                     bot.atras = true;
-                } else if (rnd.nextInt(100) < 75 && jugador.parar && (!bot.ataque && !bot.ataqueFuerte)) { // Ataque fuerte
+                } else if (rnd.nextInt(100) < 75 ||  (jugador.parar && (!bot.ataque && !bot.ataqueFuerte))) { // Ataque fuerte
                     bot.ataqueFuerte = true;
                     bot.adelante = false;
                     bot.atras = false;
                     bot.saltar = false;
                     timer = 30;
-                } else if (rnd.nextInt(100) < 75 && !bot.ataque && !bot.ataqueFuerte) { // Ataque
+                } else if (rnd.nextInt(100) < 75 || (!bot.ataque && !bot.ataqueFuerte)) { // Ataque
                     if (rnd.nextBoolean()) {
                         bot.ataque = true;
                     } else {
@@ -73,7 +77,7 @@ public class ControladorIA {
                 bot.parar = bot.saltar = bot.ataque = bot.adelante = bot.ataqueFuerte = false;
             }
         } else if (bot.atras && distancia > -2.1f && distancia < 0) { // Saltar
-            bot.saltar = true;
+            bot.saltar = jugador.esPersonaje ? true : rnd.nextBoolean();
         } else if (distancia < -2.1f) { // Ponerse delante (Evitar obstáculos)
             bot.atras = true;
             bot.parar = bot.saltar = bot.ataque = bot.adelante = bot.ataqueFuerte = false;

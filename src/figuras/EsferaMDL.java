@@ -24,7 +24,7 @@ public class EsferaMDL extends Figura {
     
 
     public EsferaMDL(String ficheroMDL, float radio, BranchGroup conjunto, ArrayList<Figura> listaObjetos,
-            Juego juego, boolean esPersonaje, boolean player2) {
+            AbstractGame juego, boolean esPersonaje, boolean player2) {
         super(conjunto, listaObjetos, juego, player2);
         esMDL = true;
         this.esPersonaje = esPersonaje;

@@ -10,6 +10,7 @@ import javax.media.j3d.BranchGroup;
 import javax.media.j3d.Canvas3D;
 import javax.swing.JFrame;
 import static javax.swing.JFrame.EXIT_ON_CLOSE;
+import simulador.IAvsIA;
 import simulador.Juego;
 
 /**
@@ -68,7 +69,10 @@ public class PrincipalMenu extends JFrame{
         menu.Opcion opcionIAIA = new menu.Opcion ("Bot vs Bot");
         opcionIAIA.setEjecutable(new Runnable(){
             public void run(){
-                throw new RuntimeException ("Aún no está terminado.");
+                universo.removeAllLocales();
+                PrincipalMenu.ventana.setVisible(false);
+                IAvsIA.principal(argumentos);
+                PrincipalMenu.ventana.dispose();
             }
         });
         

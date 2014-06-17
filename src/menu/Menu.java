@@ -61,6 +61,7 @@ public class Menu {
         listaTextos.add(nuevoTexto);
         transformacion.addChild(nuevoTexto.crearTexto());
         ultimaPosicion.y -= separacionLineas;
+        if (listaOpciones.isEmpty()) nuevoTexto.remarcar();
         listaOpciones.add(opcion);
         alturaMenu.addChild(nuevoBloque);
         numeroDeOpciones++;

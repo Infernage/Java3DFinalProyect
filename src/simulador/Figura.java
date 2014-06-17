@@ -25,7 +25,7 @@ public class Figura {
     public BranchGroup conjunto;
     DiscreteDynamicsWorld mundoFisico;
     Matrix3f matrizRotacionPersonaje = new Matrix3f();
-    Juego juego;
+    AbstractGame juego;
     protected boolean esPersonaje;
     public float vida=100;
 
@@ -37,7 +37,7 @@ public class Figura {
     //Si adem�s, hubiera que realizar uan accion particular (ej. Dispararle, darle alimento) se necesitaria otro atributo (ej. TareaObjetivo)
     float aceleracionMuscular;
 
-    public Figura(BranchGroup conjunto, ArrayList<Figura> listaObjetosFisicos, Juego juego, boolean p2) {
+    public Figura(BranchGroup conjunto, ArrayList<Figura> listaObjetosFisicos, AbstractGame juego, boolean p2) {
         player2 = p2;
         this.listaObjetosFisicos = listaObjetosFisicos;
         this.conjunto = conjunto;
