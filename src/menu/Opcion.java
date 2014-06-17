@@ -41,6 +41,6 @@ public class Opcion {
     }
     
     public void ejecutar(){
-        ejecutable.run();
+        new Thread(ejecutable).start();
     }
 }

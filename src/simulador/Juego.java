@@ -420,7 +420,7 @@ public class Juego extends JFrame implements Runnable {
         }
     }
 
-    public static void main(String[] args) {
+    public static void principal(String[] args) {
         Juego x = new Juego();
         x.setTitle("Juego");
         x.setSize(1000, 800);
