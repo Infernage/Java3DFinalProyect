@@ -61,6 +61,7 @@ public class PrincipalMenu extends JFrame{
                 universo.removeAllLocales();
                 PrincipalMenu.ventana.setVisible(false);
                 Juego.principal(argumentos);
+                PrincipalMenu.ventana.dispose();
             }
         });
         

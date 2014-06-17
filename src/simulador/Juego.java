@@ -1,5 +1,6 @@
 package simulador;
 
+import Menu.PrincipalMenu;
 import java.awt.*;
 import javax.swing.*;
 import javax.media.j3d.*;
@@ -13,12 +14,14 @@ import com.bulletphysics.collision.narrowphase.ManifoldPoint;
 import com.bulletphysics.collision.narrowphase.PersistentManifold;
 import com.bulletphysics.dynamics.constraintsolver.SequentialImpulseConstraintSolver;
 import com.bulletphysics.linearmath.Transform;
+import com.sun.j3d.utils.geometry.Text2D;
 import figuras.Esfera;
 import figuras.EsferaMDL;
 
 public class Juego extends JFrame implements Runnable {
 
     public static final int POS_SCENE_L = 41, POS_SCENE_R = 19, POS_PJ1 = 32, POS_PJ2 = 28;
+    public static Juego game;
 
     int estadoJuego = 0;
     SimpleUniverse universo;
@@ -135,11 +138,10 @@ public class Juego extends JFrame implements Runnable {
 
         //Creando un Agente (es decir, un personaje aut�nomo) con el objetivo de perseguir al personaje controlado por teclado
         /*perseguidor = new Esfera(radio, "texturas/balon.jpg", conjunto, listaObjetosFisicos, this);
-        if (!actualizandoFisicas) {
-            perseguidor.crearPropiedades(masa, elasticidad, dampingLineal, 20, 4, -15, mundoFisico);
-        }*/
+         if (!actualizandoFisicas) {
+         perseguidor.crearPropiedades(masa, elasticidad, dampingLineal, 20, 4, -15, mundoFisico);
+         }*/
        //perseguidor.asignarObjetivo(personaje,15f);   //Este objetivo de perseguir DEBE actualizado para que persiga la nueva posicion del personaje
-
         //Barra de vida
         lifeBar1 = new LifeBar(personaje, conjunto, true);
         lifeBar2 = new LifeBar(personaje2, conjunto, false);
@@ -156,6 +158,23 @@ public class Juego extends JFrame implements Runnable {
             if (tiempoJuego > 1000) {
                 estadoJuego = 1;
             }
+            if (personaje.vida <= 0 || personaje2.vida <= 0) {
+                Text2D text = new Text2D(personaje.vida <= 0 ? "Has perdido" : "Has ganado", new Color3f(
+                        personaje.vida <= 0 ? Color.red : Color.yellow), "Calibri", 144, Font.BOLD);
+                PolygonAttributes att = new PolygonAttributes();
+                att.setCullFace(PolygonAttributes.CULL_NONE);
+                //att.setBackFaceNormalFlip(true);
+                text.getAppearance().setPolygonAttributes(att);
+                BranchGroup group = new BranchGroup();
+                Transform3D tr = new Transform3D();
+                tr.set(new Vector3d(40f, 0f, POS_PJ1 - 0.5));
+                tr.setRotation(new AxisAngle4d(0, 1d, 0, Math.toRadians(90)));
+                TransformGroup gr = new TransformGroup(tr);
+                gr.addChild(text);
+                group.addChild(gr);
+                conjunto.addChild(group);
+                estadoJuego = -1;
+            }
         } else if (estadoJuego == 1) {
             //Removiendo las figuras dinamicas. El juego continua 10 segundos mas
             int i = 1;
@@ -171,7 +190,7 @@ public class Juego extends JFrame implements Runnable {
         //Actualizar barras de vida
         lifeBar1.actualizar();
         lifeBar2.actualizar();
-        
+
         ai.comprobarEstado();
 
         //ACTUALIZAR DATOS DE FUERZAS DEL PERSONAJE CONTROLADO POR EL JUGADOR
@@ -281,77 +300,85 @@ public class Juego extends JFrame implements Runnable {
         try {
             mundoFisico.stepSimulation(dt);    //mundoFisico.stepSimulation ( dt  ,50000, dt*0.2f);
             /*int maniFolds = mundoFisico.getDispatcher().getNumManifolds();
-            for (int i = 0; i < maniFolds; i++) {
-                PersistentManifold fold = mundoFisico.getDispatcher().getManifoldByIndexInternal(i);
-                CollisionObject a = (CollisionObject) fold.getBody0(), b = (CollisionObject) fold.getBody1();
-                int contacts = fold.getNumContacts();
-                for (int j = 0; j < contacts; j++) {
-                    ManifoldPoint point = fold.getContactPoint(j);
-                    if (point.getDistance() < 0.f) {
-                        if (mundoFisico.getCollisionObjectArray()
-                                .get(personaje.identificadorFisico).equals(a) && mundoFisico.getCollisionObjectArray()
-                                .get(personaje2.identificadorFisico).equals(b)) {
-                            if (personaje.ataque) {
-                                if (!personaje2.parar) personaje2.vida += ataque;
-                                personaje2.cuerpoRigido.setLinearVelocity(new Vector3f(0, 0,
-                                        (float) direccionFrente2.z * ataque * 0.1f));
-                            } else if (personaje.ataqueFuerte) {
-                                if (!personaje2.parar) personaje2.vida += ataqueFuerte;
-                                personaje2.cuerpoRigido.setLinearVelocity(new Vector3f(0, 0,
-                                        (float) direccionFrente2.z * ataqueFuerte * 0.1f));
-                            } else if (personaje2.ataque) {
-                                if (!personaje.parar) personaje.vida += ataque;
-                                personaje.cuerpoRigido.setLinearVelocity(new Vector3f(0, 0,
-                                        (float) direccionFrente1.z * -ataque * 0.1f));
-                            } else if (personaje2.ataqueFuerte) {
-                                if (!personaje.parar) personaje.vida += ataqueFuerte;
-                                personaje.cuerpoRigido.setLinearVelocity(new Vector3f(0, 0,
-                                        (float) direccionFrente1.z * -ataqueFuerte * 0.1f));
-                            }
-                        } else if (mundoFisico.getCollisionObjectArray()
-                                .get(personaje.identificadorFisico).equals(b) && mundoFisico.getCollisionObjectArray()
-                                .get(personaje2.identificadorFisico).equals(a)) {
-                            if (personaje.ataque) {
-                                if (!personaje2.parar) personaje2.vida += ataque;
-                                personaje2.cuerpoRigido.setLinearVelocity(new Vector3f(0, 0,
-                                        (float) direccionFrente2.z * ataque * 0.1f));
-                            } else if (personaje.ataqueFuerte) {
-                                if (!personaje2.parar) personaje2.vida += ataqueFuerte;
-                                personaje2.cuerpoRigido.setLinearVelocity(new Vector3f(0, 0,
-                                        (float) direccionFrente2.z * ataqueFuerte * 0.1f));
-                            } else if (personaje2.ataque) {
-                                if (!personaje.parar) personaje.vida += ataque;
-                                personaje.cuerpoRigido.setLinearVelocity(new Vector3f(0, 0,
-                                        (float) direccionFrente1.z * -ataque * 0.1f));
-                            } else if (personaje2.ataqueFuerte) {
-                                if (!personaje.parar) personaje.vida += ataqueFuerte;
-                                personaje.cuerpoRigido.setLinearVelocity(new Vector3f(0, 0,
-                                        (float) direccionFrente1.z * -ataqueFuerte * 0.1f));
-                            }
-                        }
-                    }
-                }
-            }*/
-            
+             for (int i = 0; i < maniFolds; i++) {
+             PersistentManifold fold = mundoFisico.getDispatcher().getManifoldByIndexInternal(i);
+             CollisionObject a = (CollisionObject) fold.getBody0(), b = (CollisionObject) fold.getBody1();
+             int contacts = fold.getNumContacts();
+             for (int j = 0; j < contacts; j++) {
+             ManifoldPoint point = fold.getContactPoint(j);
+             if (point.getDistance() < 0.f) {
+             if (mundoFisico.getCollisionObjectArray()
+             .get(personaje.identificadorFisico).equals(a) && mundoFisico.getCollisionObjectArray()
+             .get(personaje2.identificadorFisico).equals(b)) {
+             if (personaje.ataque) {
+             if (!personaje2.parar) personaje2.vida += ataque;
+             personaje2.cuerpoRigido.setLinearVelocity(new Vector3f(0, 0,
+             (float) direccionFrente2.z * ataque * 0.1f));
+             } else if (personaje.ataqueFuerte) {
+             if (!personaje2.parar) personaje2.vida += ataqueFuerte;
+             personaje2.cuerpoRigido.setLinearVelocity(new Vector3f(0, 0,
+             (float) direccionFrente2.z * ataqueFuerte * 0.1f));
+             } else if (personaje2.ataque) {
+             if (!personaje.parar) personaje.vida += ataque;
+             personaje.cuerpoRigido.setLinearVelocity(new Vector3f(0, 0,
+             (float) direccionFrente1.z * -ataque * 0.1f));
+             } else if (personaje2.ataqueFuerte) {
+             if (!personaje.parar) personaje.vida += ataqueFuerte;
+             personaje.cuerpoRigido.setLinearVelocity(new Vector3f(0, 0,
+             (float) direccionFrente1.z * -ataqueFuerte * 0.1f));
+             }
+             } else if (mundoFisico.getCollisionObjectArray()
+             .get(personaje.identificadorFisico).equals(b) && mundoFisico.getCollisionObjectArray()
+             .get(personaje2.identificadorFisico).equals(a)) {
+             if (personaje.ataque) {
+             if (!personaje2.parar) personaje2.vida += ataque;
+             personaje2.cuerpoRigido.setLinearVelocity(new Vector3f(0, 0,
+             (float) direccionFrente2.z * ataque * 0.1f));
+             } else if (personaje.ataqueFuerte) {
+             if (!personaje2.parar) personaje2.vida += ataqueFuerte;
+             personaje2.cuerpoRigido.setLinearVelocity(new Vector3f(0, 0,
+             (float) direccionFrente2.z * ataqueFuerte * 0.1f));
+             } else if (personaje2.ataque) {
+             if (!personaje.parar) personaje.vida += ataque;
+             personaje.cuerpoRigido.setLinearVelocity(new Vector3f(0, 0,
+             (float) direccionFrente1.z * -ataque * 0.1f));
+             } else if (personaje2.ataqueFuerte) {
+             if (!personaje.parar) personaje.vida += ataqueFuerte;
+             personaje.cuerpoRigido.setLinearVelocity(new Vector3f(0, 0,
+             (float) direccionFrente1.z * -ataqueFuerte * 0.1f));
+             }
+             }
+             }
+             }
+             }*/
+
             float distancia = personaje.posiciones[2] - personaje2.posiciones[2];
-            if (distancia <= 2.1f && distancia > 0){
-                if (personaje.ataque){
-                    if (!personaje2.parar) personaje2.vida += ataque;
+            if (distancia <= 2.1f && distancia > 0) {
+                if (personaje.ataque) {
+                    if (!personaje2.parar) {
+                        personaje2.vida += ataque;
+                    }
                     personaje2.cuerpoRigido.setLinearVelocity(new Vector3f(0, 0,
-                                        (float) direccionFrente1.z * -ataque * 0.1f));
-                } else if (personaje.ataqueFuerte){
-                    if (!personaje2.parar) personaje2.vida += ataqueFuerte;
+                            (float) direccionFrente1.z * -ataque * 0.1f));
+                } else if (personaje.ataqueFuerte) {
+                    if (!personaje2.parar) {
+                        personaje2.vida += ataqueFuerte;
+                    }
                     personaje2.cuerpoRigido.setLinearVelocity(new Vector3f(0, 0,
-                                        (float) direccionFrente1.z * -ataqueFuerte * 0.1f));
+                            (float) direccionFrente1.z * -ataqueFuerte * 0.1f));
                 }
-                if (personaje2.ataque){
-                    if (!personaje.parar) personaje.vida += ataque;
+                if (personaje2.ataque) {
+                    if (!personaje.parar) {
+                        personaje.vida += ataque;
+                    }
                     personaje.cuerpoRigido.setLinearVelocity(new Vector3f(0, 0,
-                                        (float) direccionFrente1.z * -ataque * 0.1f));
-                } else if (personaje2.ataqueFuerte){
-                    if (!personaje.parar) personaje.vida += ataqueFuerte;
+                            (float) direccionFrente1.z * -ataque * 0.1f));
+                } else if (personaje2.ataqueFuerte) {
+                    if (!personaje.parar) {
+                        personaje.vida += ataqueFuerte;
+                    }
                     personaje.cuerpoRigido.setLinearVelocity(new Vector3f(0, 0,
-                                        (float) direccionFrente1.z * -ataqueFuerte * 0.1f));
+                            (float) direccionFrente1.z * -ataqueFuerte * 0.1f));
                 }
             }
 
@@ -395,16 +422,25 @@ public class Juego extends JFrame implements Runnable {
         float dt = 3f / 100f;
         int tiempoDeEspera = (int) (dt * 1000);
         while (estadoJuego != -1) {
-             try {
-            actualizar(dt);
-              } catch (Exception e) {
-                   System.out.println("Error durante actualizar. Estado del juego " + estadoJuego);
-               }
+            try {
+                actualizar(dt);
+            } catch (Exception e) {
+                System.out.println("Error durante actualizar. Estado del juego " + estadoJuego);
+            }
             try {
                 Thread.sleep(tiempoDeEspera);
             } catch (Exception e) {
             }
         }
+        for (int i = 0; i < 3000; i += 100) {
+            try {
+                Thread.sleep(100);
+            } catch (Exception e) {
+            }
+        }
+        universo.removeAllLocales();
+        game.dispose();
+        PrincipalMenu.main(null);
     }
 
     void colocarCamara(SimpleUniverse universo, Point3d posicionCamara, Point3d objetivoCamara) {
@@ -421,12 +457,12 @@ public class Juego extends JFrame implements Runnable {
     }
 
     public static void principal(String[] args) {
-        Juego x = new Juego();
-        x.setTitle("Juego");
-        x.setSize(1000, 800);
-        x.setVisible(true);
-        x.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        game = new Juego();
+        game.setTitle("Juego");
+        game.setSize(1000, 800);
+        game.setVisible(true);
+        game.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         float L = 1f;
-        x.colocarCamara(x.universo, new Point3d(50f * L, 0f * L, 30f * L), new Point3d(10, 0, 31));
+        game.colocarCamara(game.universo, new Point3d(50f * L, 0f * L, 30f * L), new Point3d(10, 0, 31));
     }
 }

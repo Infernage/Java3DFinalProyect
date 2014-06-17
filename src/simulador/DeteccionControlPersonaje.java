@@ -105,6 +105,6 @@ public class DeteccionControlPersonaje extends javax.media.j3d.Behavior {
         }
          
         
-        wakeupOn(keepUpCondition);
+        if (Juego.game.estadoJuego != -1) wakeupOn(keepUpCondition);
     }
 }
